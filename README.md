@@ -1,111 +1,139 @@
-# -PaperReview_LM_Size
-On the dangers of stochastic parrots: Can language models be too big? Paper Review
-
-# Paper Review: Self-Attention Attribution: Interpreting Information Interactions Inside Transformer
+# Paper Review: On the dangers of stochastic parrots: Can language models be too big?
 
 ## Overview
 
-1. As Transformer-based models benefits from the powerful multi-head self-attention mechanism, till this paper is published, there was no paper explain how these input features interact with each other to reach predictions. Therefore, to address the above issues, they propose a self-attention attribution method. 
+### Background
+
+One of the biggest trends in natural language processing (NLP) has been the increasing size of language models (LMs) as measured by the number of parameters and size of training data. Both datasize and parameter are experiencing explosive growth. But our hardware are not growing that fast.The graph below shows this trend.
 
 
-<img width="466" alt="image" src="https://user-images.githubusercontent.com/56851668/160319071-5b2f7fa6-f436-43e6-9264-c53cbc3a7ea0.png">
-
-- The attention score matrix is quite dense, so burden on us to understand how words interact with each other within Transformer
-- Even if an attention score is large, it does not mean the pair of words is important to model decisions
-- Self-Attention Attribution: assign  higher  scores  if  the  interaction  contributes  more  to the final prediction
-
-2. Self-Attention Attribution Score:
-
-<img width="346" alt="image" src="https://user-images.githubusercontent.com/56851668/160320623-39d0e9ac-3bab-4353-9778-c62e9fe84b1d.png">
-
-- dot product means element-wise multiplication
-- Ah denotes the h-th head's attention weight matrix
-- the integral part computes the gradient of model F
+<img width="1285" alt="image" src="https://user-images.githubusercontent.com/69759816/161464139-92c1b423-c34d-46e8-b017-d08662477b26.png">
 
 
-3. Effective Analysis
 
-<img width="415" alt="image" src="https://user-images.githubusercontent.com/56851668/160323010-993dccb3-2b66-4f90-bbbf-7ffe313fb697.png">
+### What are the risks?
 
-If we prune the heads with small attribution score first, the accuracy can even increase. 
-If we prune the heads with large attribution score, the accuracy will decrease majorly.
-Compared with pruning heads with large or small attention scores, the influence on pruning head with attribution score is more obvious. 
+- Environmental and financial costs
+- Unmanageable training data
+- Research trajectories
+- Potential harms of synthetic language
 
+### Environmental costs & financial inaccessibility
 
-4. Use Case 1: Attention Head Pruning
+- Average human across the globe responsible for 5t of CO2 emissions per year*
+- Strubell et al. (2019)
+- Transformer model training procedure on GPUs 284t of CO2 emissions
+- 0.1 BLUE score increase en-de results in increase of ~$150,000 in compute cost
+- Encourage reporting training time and sensitivity to hyperparameters
+- Suggest more equitable access to compute clouds through government
 
-<img width="402" alt="image" src="https://user-images.githubusercontent.com/56851668/160328722-3083b379-615c-4070-b432-91f396d3ff9d.png">
+Current mitigation efforts:
 
-According to the previous sections, they get the idea that only a small part of attention heads contribute to the final prediction, while others are less helpful. 
-To do the experiment, they calculated the importance score from 200 different examples. They sort all the heads according to the importance metrics, and less important heads are first pruned. In their experiment, they used the Taylor Expansion as a baseline model to compare with. 
-From this graph, we can see that the pruning performance of the attribution methods is competitive with the Taylor expansion method. 
-On the MNLI dataset, when only 10% attention heads are retained, the attribution method can still achieve ~60%  accuracy. 
-
-
-5. Use Case 2: Visualizing Information Flow Inside Transformer
-
-<img width="336" alt="image" src="https://user-images.githubusercontent.com/56851668/160330492-0f01221c-6fe8-4f8f-84ad-4bc16fbee1ae.png">
-
-The second use case is to construct attribution tree based on the attribution method. This tree helps indicate how information flows from input tokens to the final prediction. 
-
-Algorithm: 
-
-For each layer we first calculate AttATTR scores of different heads, then sum then up. 
-Then, they need to decide a threshold between maximizing the summation of attribution scores and minimizing the number of edges in the tree. Here they chose 0.4 as their threshold. 
-
-This sentence is from SST-2 dataset, which the task of this dataset is to classify the sentiment of each sentence. This sentence is positive, and from this tree, we can observe that information in the first part of the sentence ”seldom has a movie so” is aggregated to the “has” token. “the spirit of a man and his work” flows to the sprit token. Both words have strong positive tendency. Finally, all the information aggregates to the verb “matched”, give us better understanding on how the model makes the prediction. 
+- Renewable energy sources
+- Prioritize computationally efficient hardware
+- Document energy and carbon metrics
 
 
-6. Use Case 3: Adversarial Attack
+Large LMs, particularly those in English and other high-resource languages, benefit those who have the most in society
+- Marginalized communities around the world impacted most by climatechange
+- Maldives threatened by rising sea levels (Anthoff et al 2010)
+- But these communities are rarely able to see benefits of language technology because LLMs aren’t built for their languages.
 
-<img width="430" alt="image" src="https://user-images.githubusercontent.com/56851668/160335207-c4480e92-0401-418f-aeef-03f7d98127d9.png">
+### Unmanageable Training Data
 
-The third use case is the adversarial attack. 
-They noticed that some of the models tend to over-emphasize some individual patterns to make the prediction but omitting most of the input. 
+**A large dataset is not necessarily diverse**
+Who has access to the Internet and is contributing?
+- Younger people and those from developed countries
+Who is being subject to moderation?
+-Twitter - accounts receiving death threats more likely to be suspended than those issuing threats
+What parts of the Internet are being scraped?
+- Reddit - US users 67% men and 64% are ages 18-29
+- Wikipedia - only 8.8-15% are women or girls
+- Not many sites with fewer incoming and outgoing links, like blogs
 
-They extract the attention dependencies with the largest attribution scores across different layers from the input and employ these patterns as the adversarial triggers. They insert the triggers into the test input at the same relative position as in the original sentence.  
+**Static data/Changing social views**
 
-Two patterns “floods-ice” and “Iowa-Florida” contributes most to the prediction contradict in the source sentence. Then, they put the two patterns into other sentences as an attack. The second sentence here originally has a relationship of entailment. After adding triggers, it turns out to be contradiction. The third one is originally neutral, and becomes contradiction after adding the triggers. 
+**Bias**
+
+![image](https://user-images.githubusercontent.com/69759816/161466587-9cfc26ab-4581-4cf8-99c4-48d1c2e5247c.png)
+
+
+### Research Trajectories
+
+- Focus on LMs and achieving new state-of-the-art(SOTA) on leaderboards, particularly NLU
+- But LMs have been shown to excel due to spurious dataset artifacts (Niven & Kao 2019, Bras et al 2020)
+- LMs trained only on linguistic form don’t have access to meaning (Bender & Koller 2020)
+- Are we actually learning about machine language understanding?
+
+### Potential harms of synthetic language
+
+- Human-human interaction is co-constructed and leads to a shared model of the world (Reddy 1979, Clark 1996)
+- An LM is a system for haphazardly stitching together linguistic forms from its vast training data, without any reference to meaning: a stochastic parrot.
+- Nonetheless, humans encountering synthetic text make sense of it
+- Denigration, stereotype threat, hate speech: harms to reader, harms to bystanders
+- Cheap synthetic text can boost extremist recruiting (McGuffie & Newhouse 2020)
+
+### Risk management strategies
+
+**Allocate valuable research time carefully**
+- Incorporate energy and compute efficiency in planning and model evaluations
+- Select datasets intentionally
+- ‘Feeding AI systems on the world’s beauty, ugliness, and cruelty, but expecting it to reflect only the beauty is a fantasy.’ (Birhane and Prabhu 2021, after Benjamin)
+- Document process, data, motivations, and note potential users and stakeholders
+- Pre-mortem analyses: consider worst cases and unanticipated causes
+- Value sensitive design: identify stakeholders and design to support their values
+
+
 
 
 ## Critical Analysis
 
-I like this paper because
-- Not only proposing a new methods, but also come up with a lot of use cases of this methods
-- Practical and enlightening for future use either in the industry or in the academia. 
+I disagree with this article in general because
+- The rapid growth shows that the limit is far from being reached, so there is a lot of room for growth.
+- We can't negate more advantages because of potential drawbacks.
+- I agree with part of it in overfitting and bias. But I don't think stereotypes and racism have connection with model size.
+- Why Explore Space?
 
-Some improvement I can think of:
-- some typos
-- For the second use case, when they implement the tree visualization, they chose tau = 0.4 as a threshold, but did not explain on their choice of this threshold. Intuitively, a threshold of 0.5 makes more sense. I believe they did not select 0.4 as the threshold randomly. The process of deciding on 0.4 as their threshold should be more discussed. This can be helpful when people use this visualization in the future.
-- For the third use case, there are only three sets of triggers from each dataset. I am concerned if this is enough. They said they chose top 3 patterns, but what is the process of choosing the top 3 patterns? Also, how did they decide on trigger positions? I am wondering have they tried different positions, and will different positions make the result different.
+![image](https://user-images.githubusercontent.com/69759816/161469459-c1f8c1e2-bbe5-4df0-bc09-ac03055950e5.png)
 
+In 1970, a nun wrote to Dr. Stuhlinger, the associate director of science at NASA’s Marshall Space Flight Center, in response to his ongoing research into a piloted mission to Mars. Specifically, she asked how he could suggest spending billions of dollars on such a project at a time when so many children were starving on Earth.
+
+The voyage to Mars will certainly not be a direct source of food for the hungry. However, it will lead to so many new technologies and capabilities that the spin-offs from this project alone will be worth many times the cost of its implementation.
 
 ## Discussion
 
 ### Topic 1:
 
-Do you think more tokens means higher accuracy when training Transformer models? 
+How big is too big?
 
 ### Topic 2:
 
-What other use cases can you come up with the Self-Attention Attribution method? 
+Are ever larger language models (LMs) inevitable or necessary?
 
 ### Topic 3:
 
-As this paper is nominated as the Best Paper Award, why do you think this paper can stand out? 
+How can we pursue the research direction while reduciing its associated risks?
 
 ## Resource Links
 
-Paper: https://arxiv.org/abs/2004.11207
+Paper: https://dl.acm.org/doi/10.1145/3442188.3445922
 
-Repo: https://github.com/YRdddream/attattr
+Repo & Video: https://www.turing.ac.uk/events/dangers-stochastic-parrots
 
-Video: https://www.youtube.com/watch?v=0keN57ao9J8
+## Other Resources
+
+* [When is a neural net too big for production?](https://neal-lathia.medium.com/when-is-a-neural-net-too-big-for-production-4315452193ef)
+
+* [Large Language Models: A New Moore's Law?](https://huggingface.co/blog/large-language-models)
+
+* [Why Explore Space?](https://lettersofnote.com/2012/08/06/why-explore-space/)
 
 ## Video Recording
 
-https://youtu.be/lhvjhozmDlE
+Coming Soon
 
 ## Code Demo
 
-In this repo. 
+https://openai.com/blog/better-language-models/
+
+Since this article is about theory, i.e. ethics rather than technique. Thus, my demo code is to show that there still is a lot of room for improvement in Big LMs.
