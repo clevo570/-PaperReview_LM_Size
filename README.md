@@ -21,20 +21,19 @@ One of the biggest trends in natural language processing (NLP) has been the incr
 ### Environmental costs & financial inaccessibility
 
 - Average human across the globe responsible for 5t of CO2 emissions per year*
-- Strubell et al. (2019)
 - Transformer model training procedure on GPUs 284t of CO2 emissions
 - 0.1 BLUE score increase en-de results in increase of ~$150,000 in compute cost
 - Encourage reporting training time and sensitivity to hyperparameters
 - Suggest more equitable access to compute clouds through government
 
-Current mitigation efforts:
+**Current mitigation efforts:**
 
 - Renewable energy sources
 - Prioritize computationally efficient hardware
 - Document energy and carbon metrics
 
 
-Large LMs, particularly those in English and other high-resource languages, benefit those who have the most in society
+**Large LMs, particularly those in English and other high-resource languages, benefit those who have the most in society**
 - Marginalized communities around the world impacted most by climatechange
 - Maldives threatened by rising sea levels (Anthoff et al 2010)
 - But these communities are rarely able to see benefits of language technology because LLMs aren’t built for their languages.
