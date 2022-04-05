@@ -129,7 +129,7 @@ Repo & Video: https://www.turing.ac.uk/events/dangers-stochastic-parrots
 
 ## Video Recording
 
-Coming Soon
+https://youtu.be/knO4dpdAzCk
 
 ## Code Demo
 
